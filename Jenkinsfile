@@ -3,6 +3,7 @@ pipeline {
 
     tools {
         maven 'Maven3'
+        jdk 'JDK8'
     }
 
     stages {
@@ -33,17 +34,17 @@ pipeline {
 
         stage('Archive Artifact') {
             steps {
-                archiveArtifacts artifacts: 'target/*.war', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'target/*.war', fingerprint: true
             }
         }
     }
 
     post {
         success {
-            echo 'Build Successful'
+            echo 'Pipeline executed successfully'
         }
         failure {
-            echo 'Build Failed'
+            echo 'Pipeline failed'
         }
         always {
             cleanWs()
