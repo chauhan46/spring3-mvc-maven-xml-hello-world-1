@@ -1,34 +1,32 @@
 node {
 
-    // Parameters
-    def branchName = params.BRANCH
-    def mvnGoals   = params.MVN_GOALS
-    def javaTool   = params.JDK_VER
-
     stage('Init') {
+
+        def branchName = params.BRANCH ?: 'master'
+        def mvnGoals   = params.MVN_GOALS ?: 'clean package'
+        def javaTool   = params.JDK_VER ?: 'JDK8'
+
         echo "Selected Branch: ${branchName}"
         echo "Maven Goals: ${mvnGoals}"
         echo "Java Version: ${javaTool}"
 
-        // Set up Java
         env.JAVA_HOME = tool name: javaTool, type: 'jdk'
         env.PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
-        echo "JAVA_HOME = ${env.JAVA_HOME}"
+
+        sh 'java -version'
+        sh 'mvn -version'
     }
 
     stage('Checkout') {
-        echo "Checking out branch: ${branchName}"
         git url: 'https://github.com/betawins/spring3-mvc-maven-xml-hello-world-1.git',
-            branch: "${branchName}"
+            branch: branchName
     }
 
-    stage('Build & Test') {
-        echo "Running Maven: ${mvnGoals}"
+    stage('Build') {
         sh "mvn ${mvnGoals}"
     }
 
-    stage('Archive Artifacts') {
-        echo "Archiving Artifacts"
+    stage('Archive') {
         archiveArtifacts artifacts: 'target/*.war', fingerprint: true
     }
 
