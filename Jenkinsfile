@@ -2,41 +2,32 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven3'   // Make sure Maven is configured in Jenkins
-        jdk 'JDK11'      // Or the JDK installed in Jenkins
-    }
-
-    environment {
-        BUILD_DIR = "target"
+        maven 'Maven3'
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                echo "Cloning repository..."
                 checkout scm
             }
         }
 
         stage('Build') {
             steps {
-                echo "Building the Maven project..."
-                sh "mvn clean compile"
+                sh 'mvn clean compile'
             }
         }
 
         stage('Test') {
             steps {
-                echo "Running unit tests..."
-                sh "mvn test"
+                sh 'mvn test'
             }
         }
 
         stage('Package') {
             steps {
-                echo "Packaging the application..."
-                sh "mvn package"
+                sh 'mvn package'
             }
         }
 
@@ -49,10 +40,10 @@ pipeline {
 
     post {
         success {
-            echo "Pipeline completed successfully!"
+            echo 'Build Successful'
         }
         failure {
-            echo "Pipeline failed!"
+            echo 'Build Failed'
         }
         always {
             cleanWs()
